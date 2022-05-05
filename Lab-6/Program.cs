@@ -113,14 +113,34 @@ namespace Lab_6
                                orderby average descending
                                select user).First();
             Console.WriteLine("Best student: " + bestStudent.Name);
-            //var leastMarks = from user in users
-            //                 where user.Role == "STUDENT"
-            //                 orderby user.Marks.Length
-            //                 select user;
-            //Console.WriteLine("Students with least marks: ");
-            //foreach (var item in leastMarks)
+            var leastMarks = (from user in users
+                             where user.Role == "STUDENT"
+                             group user by user.Marks.Length into studentMarks
+                             orderby studentMarks.Key
+                             select studentMarks).First();
+            Console.WriteLine("Students with least marks: ");
+            foreach (var item in leastMarks)
+            {
+                Console.WriteLine(item.Name);
+            }
+            var mostMarks = (from user in users
+                             where user.Role == "STUDENT"
+                             group user by user.Marks.Length into studentMarks
+                             orderby studentMarks.Key
+                             select studentMarks).Last();
+            Console.WriteLine("Students with most marks: ");
+            foreach (var item in mostMarks)
+            {
+                Console.WriteLine(item.Name);
+            }
+            //var mappedObjects = users
+            //                    .SelectMany(user => users)
+            //                    .Select(user => user.Name)
+            //                    .SelectMany(average => marksAverage)
+            //                    .Select(average => marksAverage);
+            //foreach (var item in mappedObjects)
             //{
-            //    Console.WriteLine(item);
+                
             //}
         }
     }
