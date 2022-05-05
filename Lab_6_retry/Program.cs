@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Lab_6
+namespace Lab_6_retry
 {
     class Program
     {
@@ -31,34 +31,50 @@ namespace Lab_6
                 new User {Name = "Sergiusz", Role = "STUDENT", Age = 44, Marks = new int[] { 5, 5, 5, 5, 5, 4, 5 }},
                 new User {Name = "Oliwia", Role = "STUDENT", Age = 44, Marks = new int[] { 3, 4, 5, 4, 5, 4, 5, 3}}
             };
-            var recordCount = (from user in users
-                               select user).Count();
+            var recordCount = (from user in users 
+                              select user).Count();
             Console.WriteLine("Number of records: " + recordCount);
             var userNames = from user in users
-                            select user.Name;
+                             select user.Name;
             Console.WriteLine("List of user names: ");
             foreach (var name in userNames)
             {
                 Console.WriteLine(name);
             }
-            var sortedUserNames = (from user in users
-                                   orderby user.Name ascending
-                                   select user.Name);
-            Console.WriteLine("User names sorted ascending:");
-            foreach (var name in sortedUserNames)
+            Console.WriteLine("How do you want to sort user names? (ascending/descending\nanything different to skip)");
+            var input = Console.ReadLine().ToLower();
+            if (input == "ascending")
             {
-                Console.WriteLine(name);
+                var sortedUserNames = (from user in users
+                                       orderby user.Name ascending
+                                       select user.Name);
+                Console.WriteLine("User names sorted ascending:");
+                foreach (var name in sortedUserNames)
+                {
+                    Console.WriteLine(name);
+                }
+            }
+            else if (input == "descending")
+            {
+                var sortedUserNames = from user in users
+                                       orderby user.Name descending
+                                       select user.Name;
+                Console.WriteLine("User names sorted descending:");
+                foreach (var name in sortedUserNames)
+                {
+                    Console.WriteLine(name);
+                }
             }
             var avaliableRoles = (from user in users
-                                  select user.Role).Distinct();
+                                 select user.Role).Distinct();
             Console.WriteLine("Avaliable roles: ");
             foreach (var role in avaliableRoles)
             {
                 Console.WriteLine(role);
             }
             var usersGrouped = from user in users
-                               group user by user.Role into userGroup
-                               select userGroup;
+                                group user by user.Role into userGroup
+                                select userGroup;
             Console.WriteLine("Users grouped by roles:");
             foreach (var grouping in usersGrouped)
             {
@@ -69,14 +85,14 @@ namespace Lab_6
                 }
             }
             var hasMarkCount = (from user in users
-                                where user.Marks != null && user.Marks.Length > 0
-                                select user).Count();
+                               where user.Marks != null && user.Marks.Length > 0
+                               select user).Count();
             Console.WriteLine("Records that have grades set: ");
             Console.WriteLine(hasMarkCount);
             var marksSum = from user in users
-                           where user.Role == "STUDENT"
-                           let sum = user.Marks.Sum()
-                           select sum;
+                        where user.Role == "STUDENT"
+                        let sum = user.Marks.Sum()
+                        select sum;
             Console.WriteLine("Sum of students grades: ");
             foreach (var item in marksSum)
             {
@@ -100,28 +116,28 @@ namespace Lab_6
                 Console.WriteLine(v);
             }
             var bestMark = (from user in users
-                            where user.Role == "STUDENT"
-                            select user.Marks.Max()).Max();
+                           where user.Role == "STUDENT"
+                           select user.Marks.Max()).Max();
             Console.WriteLine("Best mark: " + bestMark);
             var worstMark = (from user in users
                              where user.Role == "STUDENT"
                              select user.Marks.Min()).Min();
             Console.WriteLine("Worst mark: " + worstMark);
             var bestStudent = (from user in users
-                               where user.Role == "STUDENT"
-                               let average = user.Marks.Average()
-                               orderby average descending
-                               select user).First();
+                              where user.Role == "STUDENT"
+                              let average = user.Marks.Average()
+                              orderby average descending
+                              select user).First();
             Console.WriteLine("Best student: " + bestStudent.Name);
-            //var leastMarks = from user in users
-            //                 where user.Role == "STUDENT"
-            //                 orderby user.Marks.Length
-            //                 select user;
-            //Console.WriteLine("Students with least marks: ");
-            //foreach (var item in leastMarks)
-            //{
-            //    Console.WriteLine(item);
-            //}
+            var leastMarks = from user in users
+                             where user.Role == "STUDENT"
+                             orderby user.Marks.Length
+                              select user.Marks.Min();
+            Console.WriteLine("Students with least marks: ");
+            foreach (var item in leastMarks)
+            {
+                Console.WriteLine(item);
+            }
         }
     }
 }
